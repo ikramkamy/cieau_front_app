@@ -6,6 +6,16 @@ export default {
   ],
   theme: {
     extend: {
+       keyframes: {
+        marquee: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' }
+        }
+      },
+      animation: {
+        marquee: 'marquee 5s linear infinite'
+      },
+    
       colors: {
         primary: {
           50: "#004093",

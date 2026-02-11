@@ -50,3 +50,51 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Effet de vague liquide plus prononcé */
+/* Effet de ripple/vague circulaire */
+.splash-water-wave {
+    animation: rippleWave 5.8s ease-in forwards;
+}
+
+@keyframes rippleWave {
+    0% {
+        clip-path: circle(50% at 150% 150%);
+        opacity: 1;
+    }
+    25% {
+        clip-path: circle(40% at 120% 120%);
+        opacity: 0.9;
+    }
+    50% {
+        clip-path: circle(40% at 40% 90%);
+        opacity: 0.7;
+    }
+    75% {
+        clip-path: circle(60% at 30% 70%);
+        opacity: 0.4;
+    }
+    100% {
+        clip-path: circle(0% at 50% 50%);
+        opacity: 0;
+    }
+}
+
+/* Optionnel: Ajouter un effet de flou progressif */
+@keyframes rippleWaveWithBlur {
+    0% {
+        clip-path: circle(150% at 50% 50%);
+        filter: blur(0px);
+        opacity: 1;
+    }
+    50% {
+        clip-path: circle(90% at 45% 55%);
+        filter: blur(2px);
+        opacity: 0.6;
+    }
+    100% {
+        clip-path: circle(0% at 50% 50%);
+        filter: blur(6px);
+        opacity: 0;
+    }
+}
