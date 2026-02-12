@@ -6,7 +6,7 @@ import logo2 from "/images/Logo-Eauchezmoi.png"
 const SplashScreen = () => {
     return (
 
-        <div className='splash-water-wave h-full px-4 w-full bg-primary-50 absolute top-0 z-[500] flex justify-center  items-center' >
+        <div className='splash-water-wave h-[100vh] px-4 w-full bg-primary-50 absolute top-0 z-[500] flex justify-center  items-center' >
 
             <div className='flex flex-col justify-center items-center'>
                 <img src={logo2} className='' />

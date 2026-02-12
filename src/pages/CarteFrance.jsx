@@ -5,6 +5,8 @@ import axios from 'axios'
 import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import frame from '/images/Frame.png'
+import '../App.css';
 // Fix des icônes Leaflet
 if (typeof window !== 'undefined') {
   delete L.Icon.Default.prototype._getIconUrl
@@ -15,6 +17,11 @@ if (typeof window !== 'undefined') {
   })
 }
 
+const gotoResultpage = (commune) => {
+  alert(`Résultat des prélèvement pour la commune : ${commune.INSEE}`);
+  console.log(commune);
+  window.location.href = `/resultats/${commune.INSEE}`; 
+}
 const SearchBar = ({ communes, onSearchResult, selectedCommune }) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [suggestions, setSuggestions] = useState([])
@@ -51,15 +58,11 @@ const SearchBar = ({ communes, onSearchResult, selectedCommune }) => {
     const timer = setTimeout(() => {
       if (searchTerm.length >= 2) {
         setIsSearching(true)
-
         const results = communes
           .filter(commune =>
             commune.libelle?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            commune.com?.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
-            commune.dep?.toString().toLowerCase().includes(searchTerm.toLowerCase())
-          )
-          .slice(0, 8)
-
+            commune.postal?.toString().toLowerCase().includes(searchTerm.toLowerCase())
+          ).slice(0, 8)
         setSuggestions(results)
         setIsSearching(false)
         setShowHistory(false)
@@ -68,7 +71,6 @@ const SearchBar = ({ communes, onSearchResult, selectedCommune }) => {
         setShowHistory(searchTerm.length === 0 && searchHistory.length > 0)
       }
     }, 300)
-
     return () => clearTimeout(timer)
   }, [searchTerm, communes, searchHistory])
 
@@ -126,11 +128,11 @@ const SearchBar = ({ communes, onSearchResult, selectedCommune }) => {
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          onFocus={() => {
-            if (searchTerm.length === 0 && searchHistory.length > 0) {
-              setShowHistory(true)
-            }
-          }}
+          // onFocus={() => {
+          //   if (searchTerm.length === 0 && searchHistory.length > 0) {
+          //     setShowHistory(true)
+          //   }
+          // }}
           placeholder="Code postal ou ville..."
           style={{
             width: '100%',
@@ -233,6 +235,7 @@ const SearchBar = ({ communes, onSearchResult, selectedCommune }) => {
           </div>
           {suggestions.map((commune) => (
             <div
+              className=''
               key={commune.id}
               onClick={() => handleSearch(commune)}
               style={{
@@ -260,11 +263,11 @@ const SearchBar = ({ communes, onSearchResult, selectedCommune }) => {
                 fontWeight: 'bold',
                 flexShrink: 0
               }}>
-                {commune.dep}
+                {commune.reg}
               </span>
-              <div style={{ flex: 1 }}>
+              <div className='flex justify-between w-full' >
                 <div style={{ fontWeight: 'bold', color: '#333', marginBottom: '4px' }}>
-                  {commune.libelle}
+                  {commune.postal}-{commune.libelle}
                 </div>
                 <div style={{
                   fontSize: '12px',
@@ -287,85 +290,6 @@ const SearchBar = ({ communes, onSearchResult, selectedCommune }) => {
           ))}
         </div>
       )}
-
-      {/* Historique des recherches */}
-      {showHistory && searchHistory.length > 0 && (
-        <div style={{
-          position: 'absolute',
-          top: '100%',
-          left: 0,
-          right: 0,
-          marginTop: '10px',
-          background: 'white',
-          borderRadius: '15px',
-          boxShadow: '0 6px 25px rgba(0,0,0,0.15)',
-          zIndex: 1001,
-          animation: 'slideDown 0.3s ease'
-        }}>
-          <div style={{
-            padding: '12px 20px',
-            borderBottom: '1px solid #f0f0f0',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            color: '#666',
-            fontSize: '13px',
-            fontWeight: 'bold',
-            background: '#f9f9f9',
-            borderRadius: '15px 15px 0 0'
-          }}>
-            <span>📋 Recherches récentes</span>
-            <button
-              onClick={clearHistory}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: '#ff4444',
-                cursor: 'pointer',
-                fontSize: '12px',
-                padding: '5px 10px',
-                borderRadius: '15px',
-                transition: 'background 0.2s ease'
-              }}
-              onMouseEnter={(e) => e.target.style.background = '#ffe6e6'}
-              onMouseLeave={(e) => e.target.style.background = 'none'}
-            >
-              Effacer tout
-            </button>
-          </div>
-          {searchHistory.map((item, index) => (
-            <div
-              key={item.timestamp || index}
-              onClick={() => handleSearch(item)}
-              style={{
-                padding: '10px 20px',
-                borderBottom: index < searchHistory.length - 1 ? '1px solid #f0f0f0' : 'none',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                fontSize: '14px',
-                transition: 'background 0.2s ease'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.background = '#f8f9fa'}
-              onMouseLeave={(e) => e.currentTarget.style.background = 'white'}
-            >
-              <span style={{ color: '#00d7c0', fontSize: '16px' }}>🕐</span>
-              <span style={{ flex: 1, color: '#333' }}>{item.libelle}</span>
-              <span style={{
-                color: '#999',
-                fontSize: '11px',
-                background: '#f5f5f5',
-                padding: '3px 8px',
-                borderRadius: '12px'
-              }}>
-                {formatDate(item.timestamp)}
-              </span>
-            </div>
-          ))}
-        </div>
-      )}
-
       <style>{`
         @keyframes spin {
           0% { transform: rotate(0deg); }
@@ -393,16 +317,12 @@ const MapControls = ({ communes, onSearchResult, selectedCommune }) => {
     </>
   )
 }
-
-
-
-
 function CarteFrance() {
   const [communes, setCommunes] = useState([])
   const [display, setDisplay] = useState(true)
   const [isLoading, setIsLoading] = useState(true)
   const [selectedCommune, setSelectedCommune] = useState()
-  const [zoom, setZoom] = useState(0)
+  const [zoom, setZoom] = useState(5)
   // Bornes de la France
   const franceBounds = [
     // [41.0, -5.5],
@@ -417,7 +337,7 @@ function CarteFrance() {
       try {
         const response = await axios.get("https://immar-media.com/cieau/api/index.php/conformites")
         const data = response.data.conformites
-        console.log("response", data)
+
         if (data && Array.isArray(data)) {
           const allCommunes = data
             .filter(commune => {
@@ -433,12 +353,17 @@ function CarteFrance() {
               lat: parseFloat(commune.LAT),
               lon: parseFloat(commune.LON),
               bacterio: commune.CBL,
-              libelle: commune.LIBELLE || `Commune ${i}`,
+              libelle: commune.COMMUNE || `Commune ${i}`,
               dep: commune.DEP,
-              com: commune.COM
+              reg: commune.REG,
+              postal: commune.POSTAL,
+              date: commune.DATE,
+              INSEE: commune.INSEE,
+              conclusion: commune.CONCLUSION
             }))
           console.log(`${allCommunes.length} communes chargées`)
           setCommunes(allCommunes)
+          console.log("allCommunes", allCommunes)
         }
       } catch (error) {
         console.error('Erreur:', error)
@@ -459,6 +384,7 @@ function CarteFrance() {
     }
     loadAllCommunes()
   }, [])
+
   setTimeout(() => {
     setDisplay(false)
   }, [8000])
@@ -467,13 +393,32 @@ function CarteFrance() {
   const handleSearchResult = (commune) => {
     setSelectedCommune(commune)
   }
+  console.log("selectedCommune", selectedCommune)
+  const MapClickHandler = ({ communes, selectedCommune, onSelect }) => {
+    const map = useMap();
+
+    useEffect(() => {
+      // Cette fonction sera appelée quand vous cliquerez sur un marker
+      // Le zoom est géré directement dans l'eventHandler du CircleMarker
+    }, [map]);
+
+    return null;
+  };
+  const handleClick = (commune) => {
+    const map = useMap();
+    handleSearchResult(commune)
+    map.flyTo([commune.lat, commune.lon], 13, {
+      animate: true,
+      duration: 1.5
+    });
+  };
   return (
     <div className='w-[100%]  flex justify-center items-center flex-col relative'>
-      <div className='bg-[url("/images/Wave.png")] -z-40 bg-no-repeat bg-size-cover animate-marquee absolute h-full w-full'></div>
+      {/* <div className='bg-[url("/images/Wave.png")] -z-40 bg-no-repeat bg-size-cover animate-marquee absolute h-full w-full'></div> */}
 
       <Header />
 
-     
+
       <h1 className='uppercase text-primary-50 font-bold text-3xl my-4'>QUELLE EST LA QUALITÉ DE MON EAU DU ROBINET ?</h1>
       {display && <SplashScreen />}
       <div style={{
@@ -509,9 +454,9 @@ function CarteFrance() {
           whenCreated={(map) => {
             // Force fit to France bounds immediately
             map.fitBounds(franceBounds, {
-              padding: [0, 0],      // No padding
-              maxZoom: 6,           // Don't zoom in too much initially
-              animate: false        // Do it immediately
+              padding: [0, 0],
+              maxZoom: 6,
+              animate: false
             });
 
             // Set bounds to prevent panning outside France
@@ -533,7 +478,11 @@ function CarteFrance() {
             onSearchResult={handleSearchResult}
             selectedCommune={selectedCommune}
           />
-
+          <MapClickHandler
+            communes={communes}
+            selectedCommune={selectedCommune}
+            onSelect={handleSearchResult}
+          />
           {communesToDisplay.map(commune => (
             <CircleMarker
               key={commune.id}
@@ -546,16 +495,120 @@ function CarteFrance() {
                 fillOpacity: 0.3,
                 weight: 1
               }}
+
+              eventHandlers={{
+                click: handleClick
+              }}
             >
-              <Popup>
-                <div className='bg-white' style={{ borderRadius: "2 2 10 2" }}>
-                  <div>{commune.bacterio == 1 ? 'oui' : 'non'}</div>
-                  <h3>{commune.libelle}</h3>
-                  <div>Date Derniers Prélèvements: {commune.com}</div>
+              <Popup className="custom-commune-popup"
+                closeButton={false}
+                autoPan={true}
+                autoPanPadding={[50, 50]}>
+
+                <style>{`
+  .custom-commune-popup .leaflet-popup-content-wrapper {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    z-index:1001;
+  }
+  
+  .custom-commune-popup .leaflet-popup-tip {
+    display: none !important;
+  }
+  
+  .custom-commune-popup .leaflet-popup-close-button {
+    display: none !important;
+  }
+  
+  .custom-commune-popup .leaflet-popup-content {
+    margin: 0 !important;
+    width: 320px !important;
+    padding: 0 !important;
+  }
+ `}</style>
+                {/* <div className='bg-white min-h-[10vh] h-[25vh] flex flex-col justify-between relative rounded-2xl'>
+                  <img src={frame} className='w-full h-50  absolute z-0' />
+                  <div className='absolute p-2 z-10 mt-2  w-full flex flex-col justify-between'>
+                    <div className='flex w-full justify-between'>
+                    <span className='uppercase font-bold text-xs'>conformité bactériologique :</span>
+                    <span>
+                      {commune.bacterio == 1 ? <span className='text-success-100 flex items-center'>
+                        <div className='w-2 h-2 bg-success-100 shadow-lg rounded-full mr-1'></div>
+                       <div>oui</div> 
+                        
+                        </span> : <span>non</span>}
+                    </span>
+                    </div>
+                    <div className='w-full flex justify-between text-bold'><span>Date Derniers Prélèvements:</span><span>{commune.date}</span> </div>
+
+
+                  </div>
+
+
+                  <div className='bg-yellow-300'>
+                   
+
+                  </div>
+                  <div className='h-full flex justify-end items-center flex-col py-4' >
+                   
+                    <div className='pl-2 w-full uppercase font-extrabold'>
+                      conclusion
+
+
+                    </div>
+
+                    <div className='pl-2'>{commune.conclusion}</div>
+                  </div>
+                </div> */}
+                <div className='bg-white min-h-[10vh] flex flex-col justify-between relative rounded-xl overflow-hidden'>
+                  <img src={frame} className='w-full h-[35%] absolute' />
+
+
+                  <div className={`absolute inset-0 z-1 ${commune.bacterio == 1 ? '' : ''
+                    }`}></div>
+                  <div className='relative z-10 p-2 w-full flex flex-col gap-2'>
+                    <div className='flex w-full justify-between items-center px-2 mt-2'>
+                      <span className='uppercase font-bold text-xs'>conformité bactériologique :</span>
+                      <span>
+                        {commune.bacterio == 1 ? (
+                          <span className='text-success-100 flex items-center'>
+                            <div className='w-2 h-2 bg-success-100 shadow-lg rounded-full mr-1'></div>
+                            <div>oui</div>
+                          </span>
+                        ) : (
+                          <span className='flex items-center'>
+                            <div className='w-2 h-2 bg-red-500 shadow-lg rounded-full mr-1'></div>
+                            <div>non</div>
+                          </span>
+                        )}
+                      </span>
+                    </div>
+
+                    <div className='w-full flex justify-between text-bold px-2'>
+                      <span>Date Derniers Prélèvements:</span>
+                      <span>{commune.date || 'Non disponible'}</span>
+                    </div>
+                  </div>
+                  <div className='relative z-10 w-full flex flex-col py-4 px-2 mt-auto'>
+                    
+                    <div className='pl-2 w-full uppercase font-extrabold text-sm mb-1'>
+                      conclusion
+                    </div>
+                    <div className='pl-2 text-sm break-words whitespace-normal' >
+                      {commune.conclusion}
+                    </div>
+                    <button onClick={()=>gotoResultpage(commune)} className='rounded-md px-4 py-2 uppercase w-fit mt-4 border-1 bg-secondary-50 text-white' on>voir détails</button>
+                  </div>
                 </div>
               </Popup>
+
+
             </CircleMarker>
           ))}
+         
         </MapContainer>
 
       </div>}

@@ -26,7 +26,11 @@ export default {
 
         },
         tertiary: {
-          50: "#26F4FB"
+          50: "#26F4FB",
+          100:""
+        },
+        success:{
+          100:"#1ACA46"
         }
       }
     }
