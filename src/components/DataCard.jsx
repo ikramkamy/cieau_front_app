@@ -11,7 +11,7 @@ const DataCard = ({ value, unit, title, info, data_graph }) => {
         const sum = data.reduce((acc, item) => acc + Number(item.value), 0);
         const average = sum / data.length;
 
-        return Number(average.toFixed(2)); // round to 2 decimals
+        return Number(average.toFixed(4)); // round to 2 decimals
     }
 
     useEffect(() => {

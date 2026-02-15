@@ -529,40 +529,7 @@ function CarteFrance() {
     padding: 0 !important;
   }
  `}</style>
-                {/* <div className='bg-white min-h-[10vh] h-[25vh] flex flex-col justify-between relative rounded-2xl'>
-                  <img src={frame} className='w-full h-50  absolute z-0' />
-                  <div className='absolute p-2 z-10 mt-2  w-full flex flex-col justify-between'>
-                    <div className='flex w-full justify-between'>
-                    <span className='uppercase font-bold text-xs'>conformité bactériologique :</span>
-                    <span>
-                      {commune.bacterio == 1 ? <span className='text-success-100 flex items-center'>
-                        <div className='w-2 h-2 bg-success-100 shadow-lg rounded-full mr-1'></div>
-                       <div>oui</div> 
-                        
-                        </span> : <span>non</span>}
-                    </span>
-                    </div>
-                    <div className='w-full flex justify-between text-bold'><span>Date Derniers Prélèvements:</span><span>{commune.date}</span> </div>
-
-
-                  </div>
-
-
-                  <div className='bg-yellow-300'>
-                   
-
-                  </div>
-                  <div className='h-full flex justify-end items-center flex-col py-4' >
-                   
-                    <div className='pl-2 w-full uppercase font-extrabold'>
-                      conclusion
-
-
-                    </div>
-
-                    <div className='pl-2'>{commune.conclusion}</div>
-                  </div>
-                </div> */}
+              
                 <div className='bg-white min-h-[10vh] flex flex-col justify-between relative rounded-xl overflow-hidden'>
                   <img src={frame} className='w-full h-[35%] absolute' />
 
