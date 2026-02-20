@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import '../app.css'
 import chart from '/images/chart.svg';
-const DataCard = ({ value, unit, title,SubTitle, info, data_graph ,onpenInfo}) => {
+const DataCardPFAS = ({ value, unit, title,SubTitle, info, data_graph ,onpenInfo}) => {
     const [data, setData] = useState([])
     const [average, setAverage] = useState([])
 
@@ -43,4 +43,4 @@ const DataCard = ({ value, unit, title,SubTitle, info, data_graph ,onpenInfo}) =
 
         </div>)
 }
-export default DataCard;
+export default DataCardPFAS;

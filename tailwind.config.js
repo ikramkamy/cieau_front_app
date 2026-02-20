@@ -12,8 +12,8 @@ export default {
           '100%': { transform: 'translateX(-50%)' }
         },
         waveX: {
-          '0%, 100%': { transform: 'translateX(-50%)' },
-          '50%': { transform: 'translateX(50%)' },
+          '0%, 100%': { transform: 'translateX(-10%)' },
+          '50%': { transform: 'translateX(10%)' },
         },
         waveX_: {
           '0%, 100%': { transform: 'translateX(20%)' },
@@ -28,7 +28,7 @@ export default {
       },
       animation: {
         marquee: 'marquee 5s linear infinite',
-        waveX: 'waveX 6s ease-in-out infinite',
+        waveX: 'waveX 5s ease-in-out infinite',
         waveX_op: 'waveX_ 6s ease-in-out infinite',
         wave:'wave 6s ease-in-out infinite'
       },
