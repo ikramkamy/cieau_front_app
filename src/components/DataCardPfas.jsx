@@ -22,14 +22,14 @@ const DataCardPFAS = ({ value, unit, title,SubTitle, info, data_graph ,onpenInfo
     return (
 
         <div className='flex justify-center  w-fit' >
-            <div className="flex flex-col justify-center items-center  w-[280px] h-[110px] bg-[url('/images/frame2.png')] bg-size-([100%]) bg-no-repeat bg-center bg-auto md:bg-contain text-white p-1 font-bold">
+            <div className="flex flex-col justify-center items-center  w-[280px] h-[125px] bg-[url('/images/frame3.png')] bg-size-([100%]) bg-no-repeat bg-center bg-auto md:bg-contain text-white p-1 font-bold">
                 
                 
                 <div className=" w-9/12">
-                <div className='flex relative  text-primary-50 w-full d-flex justify-content-start items-start flex-col uppercase text-[10px] fw-bolder'
+                <div className='flex   text-primary-50 w-full d-flex justify-content-start items-start flex-col uppercase text-[10px] fw-bolder'
                 >{title}
 
-                     <span className='absolute top-3 text-[9px] text-black font-normal'>{SubTitle}</span>
+                     <span className=' top-3 text-[9px] text-black font-normal'>{SubTitle}</span>
                 </div>
                
                 <div className='fw-bolder  text-black flex  text-lg items-end '>{average}<span className='ml-1 text-sm fw-lighter'>{unit}</span>

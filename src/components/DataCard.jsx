@@ -22,7 +22,7 @@ const DataCard = ({ value, unit, title,SubTitle, info, data_graph ,onpenInfo}) =
     return (
 
         <div className='flex justify-center  w-fit' >
-            <div className="flex flex-col justify-center items-center  w-[280px] h-[110px] bg-[url('/images/frame2.png')] bg-size-([100%]) bg-no-repeat bg-center bg-auto md:bg-contain text-white p-1 font-bold">
+            <div className="flex flex-col justify-center items-center  w-[280px] h-[100px] bg-[url('/images/frame2.png')] bg-size-([100%]) bg-no-repeat bg-center bg-auto md:bg-contain text-white p-1 font-bold">
                 
                 
                 <div className=" w-9/12">

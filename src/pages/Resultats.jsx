@@ -15,67 +15,11 @@ const Results = () => {
     const token = import.meta.env.VITE_TOKEN;
     const [chimique, setChimique] = useState([]);
     const [minirals, setMinirals] = useState([]);
+    const [pfas, setPfas] = useState([]);
     const [dataCommunes, setDataCommunes] = useState({})
     const [showPopup, setShowPopup] = useState(false)
     const [selectedelement, setSelectedelement] = useState()
-    //'NO3', 'SO4','PH', 'CA','MG','K', 'HCO3', 'Na' ,
-    // async function splitParameters(data) {
-    //     const priorityKeys = ['TH','FMG', , 'CL2TOT', 'PESTOT', 'SPFAS20', 'S4PFAS'];
-
-    //     const priorityParams = [];
-    //     const otherParams = [];
-
-    //     Object.keys(data).forEach((key) => {
-    //         if (priorityKeys.includes(key)) {
-    //             priorityParams.push({
-    //                 key,
-    //                 ...data[key]
-    //             });
-    //         } else {
-    //             otherParams.push({
-    //                 key,
-    //                 ...data[key]
-    //             });
-    //         }
-    //     });
-
-    //     setChimique(priorityParams)
-    //     setMinirals(otherParams)
-    // }
-    // async function splitParameters(data) {
-    //     const priorityKeys = ['TH', 'FMG', 'CL2TOT', 'PESTOT', 'SPFAS20', 'S4PFAS'];
-    //     const secondaryKeys = ['NO3', 'SO4', 'PH', 'CA', 'MG', 'K', 'HCO3', 'Na'];
-
-    //     const priorityParams = [];
-    //     const otherParams = [];
-
-    //     // 🔹 Handle priority keys (always present)
-    //     priorityKeys.forEach((key) => {
-    //         priorityParams.push({
-    //             key,
-    //             params: data[key] || {
-    //                 SISE: 'N/C',
-    //                 unite: '',
-    //                 values: []
-    //             }
-    //         });
-    //     });
-
-    //     secondaryKeys.forEach((key) => {
-    //         otherParams.push({
-    //             key,
-    //             params: data[key] || {
-    //                 SISE: 'N/C',
-    //                 unite: ''
-    //             }
-    //         });
-    //     });
-
-    //     setChimique(priorityParams);
-    //     setMinirals(otherParams);
-    // }
     async function splitParameters(data) {
-
         const parametersMeta = {
             TH: {
                 SubTitle: "",
@@ -171,14 +115,30 @@ Valeur réglementaire : 0,02 µg/L
             }
         };
 
-        const priorityKeys = ['TH', 'FMG', 'CL2TOT', 'PESTOT', 'SPFAS20', 'S4PFAS'];
+        const priorityKeys = ['TH', 'FMG', 'CL2TOT', 'PESTOT'];
         const secondaryKeys = ['NO3', 'SO4', 'PH', 'CA', 'MG', 'K', 'HCO3', 'Na'];
+        const pfasKeys= ['SPFAS20','S4PFAS']
 
         const priorityParams = [];
         const otherParams = [];
+         const PfasParams = [];
 
         priorityKeys.forEach((key) => {
             priorityParams.push({
+                key,
+                commercialName: parametersMeta[key]?.commercialName || key,
+                description: parametersMeta[key]?.description || "",
+                SubTitle: parametersMeta[key]?.SubTitle,
+                params: data[key] || {
+                    SISE: 'N/C',
+                    unite: '',
+                    values: []
+                }
+            });
+        });
+
+         pfasKeys.forEach((key) => {
+            PfasParams.push({
                 key,
                 commercialName: parametersMeta[key]?.commercialName || key,
                 description: parametersMeta[key]?.description || "",
@@ -205,6 +165,7 @@ Valeur réglementaire : 0,02 µg/L
 
         setChimique(priorityParams);
         setMinirals(otherParams);
+        setPfas(PfasParams)
     }
 
     useEffect(() => {
@@ -257,7 +218,7 @@ Valeur réglementaire : 0,02 µg/L
                             <div className="grid grid-cols-1 justify-center items-start  md:grid-cols-2 gap-2 w-full">
                                 {chimique.map((e, index) => <DataCard key={index}  SubTitle={e.SubTitle}  onpenInfo={() => closeInfo(e)} info={e} title={e.commercialName} value={e.params.SISE} unit={e.params.unite} data_graph={e.params.values} />)}
 
-
+                                {pfas.map((e,index)=><DataCardPFAS key={index}  SubTitle={e.SubTitle}  onpenInfo={() => closeInfo(e)} info={e} title={e.commercialName} value={e.params.SISE} unit={e.params.unite} data_graph={e.params.values} />)}
                             </div>
                             <div className="flex  mt-2 w-full justify-center h-10">
                                 <CommunePopup conclusion={dataCommunes.conclusion} />
